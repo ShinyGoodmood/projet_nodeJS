@@ -1,32 +1,28 @@
-
-
-
-
 const express = require('express');
 const passport = require('passport');
+const bodyParser = require('body-parser');
 const app = express();
 
-require('./auth/auth');  // Importer la configuration de Passport
+require('./auth/auth');
 
 const routes = require('./routes/routes');
 const secureRoute = require('./routes/secure-routes');
-const bodyParser = require('body-parser');
-
-const port = 3000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
 app.use(passport.initialize());
+
+app.use('/auth', routes);
+
+const port = 3000;
 
 // --------------------------------------------------------------------------------
 
-app.get('/hey', (req, res) => {
-    res.json('hey');
+app.get('/test', (req, res) => {
+    res.json('hello');
 });
 
 app.use('/', routes);
-
 app.use('/user', passport.authenticate('jwt', { session: false }), secureRoute);
 
 app.use(function (err, req, res, next) {

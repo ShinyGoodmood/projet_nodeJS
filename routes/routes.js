@@ -1,3 +1,8 @@
+const express = require('express');
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const Router = express.Router();
+
 Router.post(
     '/signup',
     passport.authenticate('signup', { session: false }),
@@ -37,3 +42,5 @@ Router.post(
         )(req, res, next);
     }
 );
+
+module.exports = Router;

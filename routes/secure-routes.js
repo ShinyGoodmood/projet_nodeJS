@@ -1,3 +1,8 @@
+const express = require('express');
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const Router = express.Router();
+
 Router.get(
     '/profile',
     (req, res, next) => {
@@ -8,3 +13,5 @@ Router.get(
         })
     }
 );
+
+module.exports = Router;

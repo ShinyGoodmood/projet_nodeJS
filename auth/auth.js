@@ -1,19 +1,24 @@
+const passport = require('passport');
+const LocalStrategy = require('passport').Strategy;
+const JWTStrategy = require('passport-jwt').Strategy;
+const ExtractJWT = require('passport-jwt').ExtractJwt;
+
 passport.use(
     'signup',
-    new localStrategy(
+    new LocalStrategy(
         {
             usernameField: 'email',
-            passwordField: 'password'
+            passwordField: 'password',
         },
         async (email, password, done) => {
             try {
                 const user = {
                     email: 'test',
                     password: 'test',
-                }
+                };
                 return done(null, user);
             } catch (error) {
-                done(error);
+                return done(error);
             }
         }
     )
@@ -21,17 +26,17 @@ passport.use(
 
 passport.use(
     'login',
-    new localStrategy(
+    new LocalStrategy(
         {
             usernameField: 'email',
-            passwordField: 'password'
+            passwordField: 'password',
         },
         async (email, password, done) => {
             try {
                 const user = {
                     email: 'test',
                     password: 'test',
-                }
+                };
 
                 if (!user) {
                     return done(null, false, { message: 'User not found' });
@@ -39,23 +44,23 @@ passport.use(
 
                 return done(null, user, { message: 'Logged in successfully' });
             } catch (error) {
-                done(error);
+                return done(error);
             }
         }
     )
 );
 
 passport.use(
-    new JWTstrategy(
+    new JWTStrategy(
         {
             secretOrKey: 'TOP_SECRET',
-            jwtFromRequest: ExtractJWTfromUrlQueryparameter('secret_token')
+            jwtFromRequest: ExtractJWT.fromUrlQueryParameter('secret_token'), 
         },
         async (token, done) => {
             try {
                 return done(null, token.user);
             } catch (error) {
-                done(error);
+                return done(error);
             }
         }
     )
