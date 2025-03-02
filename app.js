@@ -1,37 +1,19 @@
 const express = require('express');
-const passport = require('passport');
 const bodyParser = require('body-parser');
+const userRoutes = require('./routes/userRoutes');
+const { sequelize, User } = require('./models');
+
 const app = express();
-
-require('./auth/auth');
-
-const routes = require('./routes/routes');
-const secureRoute = require('./routes/secure-routes');
-
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(passport.initialize());
 
-app.use('/auth', routes);
+app.use('/api', userRoutes);
 
-const port = 3000;
+const init = async () => {
+  await sequelize.sync({ force: true });
+  await User.create({ pseudo: 'lucas', email: 'lucas@mail.com', role: 'admin' });
+  console.log('Database initialized');
 
-// --------------------------------------------------------------------------------
+  app.listen(3000, () => console.log('Server running on port 3000'));
+};
 
-app.get('/test', (req, res) => {
-    res.json('hello');
-});
-
-app.use('/', routes);
-app.use('/user', passport.authenticate('jwt', { session: false }), secureRoute);
-
-app.use(function (err, req, res, next) {
-    res.status(err.status || 500);
-    res.json({ error: err });
-});
-
-// --------------------------------------------------------------------------------
-
-app.listen(port, () => {
-    console.log(`Serveur démarré sur http://localhost:${port}`);
-});
+init();
